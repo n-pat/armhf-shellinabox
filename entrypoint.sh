@@ -1,5 +1,7 @@
 #!/bin/sh
 
+secret_file=/run/secrets/siab_pass
+
 set -e
 if [ $SIAB_USER ]; then
     if ! id -u $SIAB_USER > /dev/null 2>&1; then
@@ -13,6 +15,8 @@ else
     if ! id -u shellboxuser > /dev/null 2>&1; then
         if [ $SIAB_PASS ]; then
             echo -e "${SIAB_PASS}\n${SIAB_PASS}" | adduser -s /bin/sh shellboxuser
+		elif [ -f $secret_file ]; then
+		    echo -e "$(cat $secret_file)\n$(cat $secret_file)" | adduser -s /bin/sh shellboxuser
         else
             echo -e "shellboxuser\nshellboxuser" | adduser -s /bin/sh shellboxuser
         fi
